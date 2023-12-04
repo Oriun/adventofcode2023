@@ -1,31 +1,56 @@
 const fs = require('fs')
 
-console.log(main())
+console.log("Part 1 : ", withoutSpelledDigits())
+console.log("Part 2 : ", withSpelledDigits())
 
-function main() {
+function withoutSpelledDigits() {
     return fs
         .readFileSync('./input.txt', 'utf8')
         .split('\n')
         .reduce((sum, line) =>
-            sum + getCalibrationValue(line), 0)
+            sum + getCalibrationValue(line, false), 0)
 }
 
-function getCalibrationValue(line) {
+function withSpelledDigits() {
+    return fs
+        .readFileSync('./input.txt', 'utf8')
+        .split('\n')
+        .reduce((sum, line) =>
+            sum + getCalibrationValue(line, true), 0)
+}
+
+function getCalibrationValue(line, spelledDigitsEnabled) {
     let first = 0
     let last = 0
-    for (let i = 0; i < line.length; i++)
-        if ((first = extractDigit(line, i, true)) !== null) break
-    for (let i = line.length - 1; i >= 0; i--)
-        if ((last = extractDigit(line, i, false)) !== null) break
-        
+    for (let index = 0; index < line.length; index++)
+        if ((first = extractDigit({
+                line,
+                index,
+                forard: true,
+                spelledDigitsEnabled
+            })) !== null) break
+    for (let index = line.length - 1; index >= 0; index--)
+        if ((last = extractDigit({
+                line,
+                index,
+                forard: false,
+                spelledDigitsEnabled
+            })) !== null) break
+
     return +`${first}${last}`
 }
 
-function extractDigit(line, index, forward) {
+function extractDigit({
+    line,
+    index,
+    forward,
+    spelledDigitsEnabled
+}) {
     const charCode = line.charCodeAt(index)
     if (charCode >= 48 && charCode <= 57) {
         return line[index]
     }
+    if (!spelledDigitsEnabled) return null
     const spelled = spelledDigit(line, index, forward)
     if (spelled >= 0) {
         return spelled
@@ -42,7 +67,7 @@ function spelledDigit(line, index, forward) {
         if (forward) {
             return line.slice(index, index + digit.length) === digit
         } else {
-            return line.slice(index - digit.length+1, index+1) === digit
+            return line.slice(index - digit.length + 1, index + 1) === digit
         }
     })
 }
