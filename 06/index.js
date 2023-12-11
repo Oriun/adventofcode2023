@@ -1,6 +1,6 @@
 const fs = require('fs')
 
-console.log('Part 2:', part1())
+console.log('Part 1:', part1())
 console.log('Part 2:', part2())
 
 // Part 1
