@@ -15,7 +15,7 @@ function part1() {
     }, 1)
 }
 
-// Part 1
+// Part 2
 function part2() {
     const [times, distances] = fs.readFileSync('input.txt', 'utf8').replace(/ /gmi, "").split('\n')
         .map(line => parseList(line.split(':')[1]))
